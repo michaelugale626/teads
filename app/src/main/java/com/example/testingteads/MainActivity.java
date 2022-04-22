@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -57,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements SyncAdWebView.Lis
 
         myWebView = (WebView) findViewById(R.id.webview);
 
-//        ObservableWebView myWebView = (ObservableWebView) LayoutInflater.from(this).inflate(R.layout.activity_main, null, false);
-
-
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
@@ -70,45 +68,16 @@ public class MainActivity extends AppCompatActivity implements SyncAdWebView.Lis
 
         // 2. Create the InReadAdPlacement
         adPlacement = TeadsSDK.INSTANCE.createInReadPlacement(this, 84242, placementSettings);
-
         webviewHelperSynch = new SyncAdWebView(this, myWebView, this::onHelperReady,"#teads-placement-slot");
-        myWebView.loadUrl("https://uat.m.sgcarmart.com/demo.html");
-
-        myWebView.setWebViewClient(new WebViewClient() {
-
-            public void onPageFinished(WebView view, String url) {
-                webviewHelperSynch.injectJS();
-                super.onPageFinished(view, url);
-                //come code
-            }
-
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                //come code
-            }
-
-            public void onPageCommitVisible (WebView view,  String url) {
-                //come code
-            }
-
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                //come code
-            }
-
-            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                super.onReceivedHttpError(view, request, errorResponse);
-                //come code
-            }
-        });
-
+        myWebView.setWebViewClient(new CustomInReadWebviewClient(webviewHelperSynch, "InRead Direct WebView"));
+        myWebView.loadUrl("file:///android_asset/demo.html");
     }
 
     @Override
     public void onHelperReady(@NonNull ViewGroup adContainer) {
 
         AdRequestSettings requestSettings = new AdRequestSettings.Builder()
-                .pageSlotUrl("https://uat.m.sgcarmart.com/demo.html")
+                .pageSlotUrl("http://teads.com")
                 .build();//
 
 
@@ -165,6 +134,12 @@ public class MainActivity extends AppCompatActivity implements SyncAdWebView.Lis
                 webviewHelperSynch.registerTrackerView(adOpportunityTrackerView);
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        webviewHelperSynch.onConfigurationChanged();
     }
 }
 
