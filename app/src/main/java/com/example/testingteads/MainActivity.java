@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -39,7 +41,8 @@ import tv.teads.sdk.InReadAdPlacement;
 import tv.teads.sdk.TeadsSDK;
 import tv.teads.sdk.renderer.InReadAdView;
 
-public class MainActivity extends AppCompatActivity{
+
+public class MainActivity extends AppCompatActivity implements SyncAdWebView.Listener{
 
     SyncAdWebView webviewHelperSynch;
     InReadAdPlacement adPlacement;
@@ -53,6 +56,10 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         myWebView = (WebView) findViewById(R.id.webview);
+
+//        ObservableWebView myWebView = (ObservableWebView) LayoutInflater.from(this).inflate(R.layout.activity_main, null, false);
+
+
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
@@ -64,7 +71,8 @@ public class MainActivity extends AppCompatActivity{
         // 2. Create the InReadAdPlacement
         adPlacement = TeadsSDK.INSTANCE.createInReadPlacement(this, 84242, placementSettings);
 
-        webviewHelperSynch = new SyncAdWebView(this, myWebView, "#teads-placement-slot");
+        webviewHelperSynch = new SyncAdWebView(this, myWebView, this::onHelperReady,"#teads-placement-slot");
+        myWebView.loadUrl("https://uat.m.sgcarmart.com/demo.html");
 
         myWebView.setWebViewClient(new WebViewClient() {
 
@@ -94,13 +102,13 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        myWebView.loadUrl("file:///android_asset/demo.html");
-        onHelperReady();
     }
 
-    public void onHelperReady() {
+    @Override
+    public void onHelperReady(@NonNull ViewGroup adContainer) {
+
         AdRequestSettings requestSettings = new AdRequestSettings.Builder()
-                .pageSlotUrl("http://teads.com")
+                .pageSlotUrl("https://uat.m.sgcarmart.com/demo.html")
                 .build();//
 
 
@@ -157,8 +165,6 @@ public class MainActivity extends AppCompatActivity{
                 webviewHelperSynch.registerTrackerView(adOpportunityTrackerView);
             }
         });
-
     }
-
 }
 

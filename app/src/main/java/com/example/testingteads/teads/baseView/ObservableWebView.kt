@@ -2,7 +2,8 @@
  * Copyright (c) Teads 2018.
  */
 
-package com.example.testingteads.teads
+//package com.example.testingteads.teads
+package com.example.testingteads.teads.baseView
 
 import android.content.Context
 import android.util.AttributeSet
@@ -24,7 +25,7 @@ class ObservableWebView : WebView {
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context.applicationContext, attrs, defStyle)
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
-        val height = floor(this.contentHeight * this.scaleX).toInt()
+        val height = floor(this.contentHeight * this.scale).toInt()
         val webViewHeight = this.measuredHeight
 
         if(this.scrollY + webViewHeight < height){

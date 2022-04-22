@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.FrameLayout
+import com.example.testingteads.teads.baseView.ObservableWebView
 import tv.teads.sdk.AdOpportunityTrackerView
 
 //import tv.teads.sdk.AdOpportunityTrackerView
@@ -26,8 +27,9 @@ import tv.teads.sdk.AdOpportunityTrackerView
  */
 class SyncAdWebView(context: Context,
                     private val webview: WebView,
-//                    private val listener: Listener,
-                    selector: String) : WebViewHelper.Listener, ObservableWebView.OnScrollListener, ObservableContainerAdView.ActionMoveListener {
+                    private val listener: Listener,
+                    selector: String) : WebViewHelper.Listener, ObservableWebView.OnScrollListener, ObservableContainerAdView.ActionMoveListener,
+    WebView(context) {
 
 
     private var opened: Boolean = false
@@ -86,7 +88,7 @@ class SyncAdWebView(context: Context,
             container.addView(containerAdView)
             webViewParent.addView(container, webviewPosition)
 
-//            listener.onHelperReady(container)
+            listener.onHelperReady(container)
         }
     }
 
